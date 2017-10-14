@@ -73,7 +73,7 @@ class mkdir
 
     private static function _create_ctrl()
     {
-        self::create_dir(ROOT_PATH.DS.APP.DS.DEFAULT_NAME.APP_CTRL_PATH.APP_CTRL_PATH);
+        self::create_dir(ROOT_PATH.DS.APP.DS.DEFAULT_NAME.APP_CTRL_PATH);
     }
 
     private static function _create_view()

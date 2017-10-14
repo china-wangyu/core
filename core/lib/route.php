@@ -52,19 +52,23 @@ class route
             self::$_WEB_DIR = $CLEAR_CORE_DIR[0];
             self::$_URL = empty(isset($url)) ? $CLEAR_CORE_DIR[1] : '';
         }elseif(self::$_URL != '/' and !empty(self::$_URL)){
+            $SCRIPT_NAME_EXPLODE = explode('/',trim($_SERVER['SCRIPT_NAME'],'/'));
             $CLEAR_CORE_DIR = explode('/',trim(self::$_URL,'/'))
                 ? explode('/',trim(self::$_URL,'/')) : '';
-            if(isset($CLEAR_CORE_DIR[1])){
-                $CLEAR = explode($_SERVER['PATH_INFO'],trim(self::$_URL,'/'));
-                if (!empty($CLEAR[1]) or isset($CLEAR[1])){
-                    $CLEAR_URL = explode('/',trim($CLEAR[0],'/'));
-                    self::$_WEB_DIR = $CLEAR_URL[0];
-                    self::$_URL = isset($CLEAR_URL[1])
-                        ?  trim($CLEAR_URL[1],'/').$_SERVER['PATH_INFO']
-                        : $CLEAR[1].$_SERVER['PATH_INFO'];
+            if (isset($SCRIPT_NAME_EXPLODE[1])){
+                self::$_WEB_DIR = $SCRIPT_NAME_EXPLODE[0];
+                unset($CLEAR_CORE_DIR[0]);
+                if (!empty($CLEAR_CORE_DIR)){
+                    $CLEAR_DATA = array_chunk($CLEAR_CORE_DIR,count($CLEAR_CORE_DIR));
+                    $CLEAR_CORE_DIR = $CLEAR_DATA[0];
+                }else{
+                    $CLEAR_CORE_DIR = '';
                 }
+
+            }
+            if(isset($CLEAR_CORE_DIR[1])){
+                self::$_URL = join('/',$CLEAR_CORE_DIR);
             }else{
-                self::$_WEB_DIR = $CLEAR_CORE_DIR[0];
                 self::_INIT_ROUTE();
             }
         }else{
