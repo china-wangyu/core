@@ -16,7 +16,7 @@ class file
      */
     public function __construct()
     {
-        $this->path = RUNTIME_PATH.LOG_PATH;
+        $this->path = IS_WIN ? ROOT_PATH.DS.RUNTIME_PATH.LOG_PATH : RUNTIME_PATH.LOG_PATH;
     }
 
     /**
@@ -44,7 +44,7 @@ class file
         $path_dir_count = strripos($filePath,'/');
         $path = str_replace('\\','/',substr($filePath,0,$path_dir_count));
         if(!is_dir($path)){
-            mkdir($path,'0777',true);
+            mkdir($path,'0755',true);
         }
 
         return file_put_contents($filePath,

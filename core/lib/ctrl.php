@@ -79,8 +79,11 @@ class ctrl
         $template = conf::get('template', 'conf')
             ? conf::get('template', 'conf')
             : conf::get('template', 'conf',true);
-        empty($template['view_path']) ? $view_dir = ROOT_PATH . DS . APP . DS . self::$_MODULE . APP_VIEW_PATH
-            : $view_dir = $template['view_path'];
+        if (empty($template['view_path'])){
+            IS_WIN ? $view_dir = ROOT_PATH . DS . APP . DS . self::$_MODULE . APP_VIEW_PATH : APP . DS . self::$_MODULE . APP_VIEW_PATH;
+        }else{
+            $view_dir = $template['view_path'];
+        }
         return str_replace('\\', '/', $view_dir); # 视图文件目录
     }
 
@@ -89,8 +92,11 @@ class ctrl
         $cache = conf::get('cache', 'conf')
             ? conf::get('cache', 'conf')
             : conf::get('cache', 'conf',true);
-        empty($cache['path']) ? $view_cache_dir = RUNTIME_PATH . CACHE_PATH
-            : $view_cache_dir = $cache['path'];
+        if (empty($cache['path'])){
+           IS_WIN ? $view_cache_dir = ROOT_PATH.DS .RUNTIME_PATH . CACHE_PATH : RUNTIME_PATH . CACHE_PATH ;
+        }else{
+            $view_cache_dir = $cache['path'];
+        }
         is_dir($view_cache_dir) ? '' : mkdir($view_cache_dir, '0777', true);
         return str_replace('\\', '/', $view_cache_dir); # HTML缓存目录
     }

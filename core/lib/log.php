@@ -15,9 +15,9 @@ class log
 
     static public function init()
     {
-        $driveType = 'file';
-        $logClass = str_replace('/','\\',CORE_DRIVE_PATH).LOG_PATH.$driveType;
-        self::$class = new $logClass;
+        $logConf = conf::get('log','conf');
+        $logClass = str_replace('/','\\',CORE_DRIVE_PATH.LOG_PATH.$logConf['type']);
+        self::$class = new $logClass();
     }
 
     static public function log($msg,$file='')

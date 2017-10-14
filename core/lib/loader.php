@@ -30,9 +30,13 @@ class loader
         \core\lib\log::init();
         \core\lib\log::log('module : '.$module.' ctrl : '.$ctrlClass.' action : '.$action);
 
-        $ctrlFile = ROOT_PATH.DS.APP.DS.$module.APP_CTRL_PATH.$ctrlClass.EXT;    # 控制器文件路径
+        # 控制器文件路径
+        $ctrlFile = is_file(APP.DS.$module.APP_CTRL_PATH.lcfirst($ctrlClass).EXT )
+            ? APP.DS.$module.APP_CTRL_PATH.lcfirst($ctrlClass).EXT
+            : APP.DS.$module.APP_CTRL_PATH.ucfirst($ctrlClass).EXT;
+        # 类名
         $ctrlClass = str_replace('/','\\',DS.APP.DS.$module.APP_CTRL_PATH)
-            .$ctrlClass; # 类名
+            .$ctrlClass;
         if (is_file($ctrlFile)){
             self::_include_file($ctrlFile);
             $ctrl = new $ctrlClass();
@@ -55,7 +59,7 @@ class loader
         }
         $class = str_replace('\\', '/', $class);
 
-        $file = ROOT_PATH . '/' . $class .EXT;
+        $file =  $class .EXT;
         if (is_file($file)) {
             self::_include_file($file);
             self::$classMap[$class] = $class;
@@ -94,7 +98,10 @@ class loader
      */
     static private function _include_file($file)
     {
-        return include str_replace('/','\\',$file);
+        if (IS_WIN){
+            $file = ROOT_PATH.DS.$file;
+        }
+        return include str_replace('\\','/',trim($file,'/'));
     }
 
 }
