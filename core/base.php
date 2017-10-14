@@ -5,7 +5,7 @@
  * Date: 2017/10/12
  * Time: 10:04
  */
-define('CORE_VERSION', '1.0.1');  # 框架版本号 1.0.1
+define('CORE_VERSION', '1.0');  # 框架版本号 1.0
 define('CORE_START_TIME', microtime(true)); # 框架运行微妙数
 define('CORE_START_MEM', memory_get_usage());   # 返回分配给 PHP 的内存量
 define('EXT', '.php');  # 脚本文件后缀名
