@@ -1,0 +1,19 @@
+{
+  "name":             "Core/Core-Framework",
+  "description":      "PHP Framework",
+  "keywords":         ["restful api", "framework", "php"],
+  "type":             "Framework ",
+  "require":{
+      "PHP" : ">= 5.3.0",
+      "filp/whoops" : "*",
+      "symfony/var-dumper": "*",
+      "catfan/medoo" : "*",
+      "twig/twig" : "*"
+  },
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://packagist.phpcomposer.com"
+    }
+  }
+}
