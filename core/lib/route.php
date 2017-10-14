@@ -47,7 +47,6 @@ class route
      */
     private static function _CLEAR_ROUTE()
     {
-
         if (strpos(self::$_URL,'index.php') !== false){
             $CLEAR_CORE_DIR = explode('index.php',self::$_URL);
             self::$_WEB_DIR = $CLEAR_CORE_DIR[0];
@@ -57,12 +56,12 @@ class route
                 ? explode('/',trim(self::$_URL,'/')) : '';
             if(isset($CLEAR_CORE_DIR[1])){
                 $CLEAR = explode($_SERVER['PATH_INFO'],trim(self::$_URL,'/'));
-                if (empty($CLEAR[1]) or !isset($CLEAR)){
-                    $CLEAR = explode('/',trim($CLEAR[0],'/'));
-                    self::$_WEB_DIR = $CLEAR[0];
-                    self::$_URL = isset($CLEAR[1])
-                        ?  $CLEAR[1].$_SERVER['PATH_INFO']
-                        : $CLEAR[0].$_SERVER['PATH_INFO'];
+                if (!empty($CLEAR[1]) or isset($CLEAR[1])){
+                    $CLEAR_URL = explode('/',trim($CLEAR[0],'/'));
+                    self::$_WEB_DIR = $CLEAR_URL[0];
+                    self::$_URL = isset($CLEAR_URL[1])
+                        ?  trim($CLEAR_URL[1],'/').$_SERVER['PATH_INFO']
+                        : $CLEAR[1].$_SERVER['PATH_INFO'];
                 }
             }else{
                 self::$_WEB_DIR = $CLEAR_CORE_DIR[0];
