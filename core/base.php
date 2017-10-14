@@ -2,8 +2,7 @@
 /**
  * Created by PhpStorm.
  * User: china-wangyu@aliyun.com
- * Date: 2017/9/26
- * Time: 15:36
+ * Date: 2017/10/10
  */
 define('CORE_VERSION', '1.0');  # 框架版本号 1.0
 define('CORE_START_TIME', microtime(true)); # 框架运行微妙数

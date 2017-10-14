@@ -3,7 +3,6 @@
  * Created by PhpStorm.
  * User: china-wangyu@aliyun.com
  * Date: 2017/10/10
- * Time: 15:44
  */
 
 namespace core\lib;

@@ -2,8 +2,7 @@
 /**
  * Created by PhpStorm.
  * User: china-wangyu@aliyun.com
- * Date: 2017/10/12
- * Time: 20:52
+ * Date: 2017/10/10
  */
 
 namespace core\lib;

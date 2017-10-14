@@ -2,11 +2,9 @@
 /**
  * Created by PhpStorm.
  * User: china-wangyu@aliyun.com
- * Date: 2017/10/12
- * Time: 22:01
+ * Date: 2017/10/10
  */
 namespace core\lib\drive\dir;
-use core\lib\conf;
 
 class mkdir
 {
