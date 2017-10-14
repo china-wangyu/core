@@ -31,9 +31,7 @@ class loader
         \core\lib\log::log('module : '.$module.' ctrl : '.$ctrlClass.' action : '.$action);
 
         # 控制器文件路径
-        $ctrlFile = is_file(APP.DS.$module.APP_CTRL_PATH.lcfirst($ctrlClass).EXT )
-            ? APP.DS.$module.APP_CTRL_PATH.lcfirst($ctrlClass).EXT
-            : APP.DS.$module.APP_CTRL_PATH.ucfirst($ctrlClass).EXT;
+        $ctrlFile = self::_VALIDATE_CTRL_FILE(APP.DS.$module.APP_CTRL_PATH,$ctrlClass);
         # 类名
         $ctrlClass = str_replace('/','\\',DS.APP.DS.$module.APP_CTRL_PATH)
             .$ctrlClass;
@@ -44,6 +42,20 @@ class loader
         }else{
             throw new \Exception("请求的控制器不存在！ controller => ".$ctrlFile);
         }
+    }
+
+    private static function _VALIDATE_CTRL_FILE($path,$fileName,$ext=EXT)
+    {
+        if (IS_WIN){
+            $path = ROOT_PATH.DS.$path;
+        }
+        $path = str_replace('\\','/',$path);
+        if (is_file($path.ucfirst($fileName).$ext)){
+            return $path.ucfirst($fileName).$ext;
+        }elseif(is_file($path.lcfirst($fileName).$ext)){
+            return $path.ucfirst($fileName).$ext;
+        }
+        return $path.$fileName.$ext;
     }
 
     /**
@@ -98,9 +110,6 @@ class loader
      */
     static private function _include_file($file)
     {
-        if (IS_WIN){
-            $file = ROOT_PATH.DS.$file;
-        }
         return include str_replace('\\','/',trim($file,'/'));
     }
 

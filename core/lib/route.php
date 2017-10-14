@@ -12,6 +12,7 @@ namespace core\lib;
 class route
 {
     private static $_URL;       # 网页URL连接
+    private static $_WEB_DIR;       # 网页URL连接
     private static $_MODULE;
     private static $_CTRL;
     private static $_ACTION;
@@ -22,7 +23,6 @@ class route
      */
     public function __construct()
     {
-
         if (!isset(self::$_URL) or self::$_URL != $_SERVER['PHP_SELF']){
             self::$_URL = $_SERVER['REQUEST_URI'];
             self::_RUN();
@@ -50,20 +50,23 @@ class route
     {
 
         if (strpos(self::$_URL,'index.php') !== false){
-
-            $url_object = explode('index.php',self::$_URL);
-            self::$_URL = empty(isset($url)) ? $url_object[1] : '';
+            $CLEAR_CORE_DIR = explode('index.php',self::$_URL);
+            self::$_WEB_DIR = $CLEAR_CORE_DIR[0];
+            self::$_URL = empty(isset($url)) ? $CLEAR_CORE_DIR[1] : '';
         }elseif(self::$_URL != '/' and !empty(self::$_URL)){
             $CLEAR_CORE_DIR = explode('/',trim(self::$_URL,'/'))
                 ? explode('/',trim(self::$_URL,'/')) : '';
-
             if(isset($CLEAR_CORE_DIR[1])){
-                $CLEAR = explode($_SERVER['PATH_INFO'],self::$_URL);
-
-                self::$_URL = isset($CLEAR[1])
-                    ?  $CLEAR[1].$_SERVER['PATH_INFO']
-                    : $CLEAR[0].$_SERVER['PATH_INFO'];
+                $CLEAR = explode($_SERVER['PATH_INFO'],trim(self::$_URL,'/'));
+                if (empty($CLEAR[1]) or !isset($CLEAR)){
+                    $CLEAR = explode('/',trim($CLEAR[0],'/'));
+                    self::$_WEB_DIR = $CLEAR[0];
+                    self::$_URL = isset($CLEAR[1])
+                        ?  $CLEAR[1].$_SERVER['PATH_INFO']
+                        : $CLEAR[0].$_SERVER['PATH_INFO'];
+                }
             }else{
+                self::$_WEB_DIR = $CLEAR_CORE_DIR[0];
                 self::_INIT_ROUTE();
             }
         }else{
@@ -77,7 +80,6 @@ class route
      */
     private static function _ROUTE()
     {
-
         if( isset(self::$_URL)){
             if (strpos(self::$_URL,'?') !== false){
                 $url = self::_ANALYSIS_ROUTE_ONE();
@@ -112,11 +114,10 @@ class route
      */
     private static function _ANALYSIS_ROUTE_ONE()
     {
-        $url = explode('?',trim(self::$_URL,'/'));
-        $url_data = explode('&',$url[1]);
-        $url_data = array_merge(explode('=',$url_data[0]),explode('=',$url_data[1]));
+        $url = explode('?',trim(self::$_URL,'/'),2);
+        parse_str($url[1],$params);
         $url_link = $url_arr = explode('/',trim($url[0],'/'));
-        return ['path' => $url_link, 'data' => isset($url_data) ? $url_data : ''];
+        return ['path' => $url_link, 'data' => empty($params) ? $params : ''];
     }
 
     /**
@@ -129,49 +130,51 @@ class route
         $url_link = [$url[0],$url[1],$url[2]];
         if(isset($url[3])){
             unset($url[0],$url[1],$url[2]);
-            array_multisort($url);
-            $url_data = $url ? $url : '';
+            $url_data = array_chunk($url,count($url));
+            $params = $url_data[0];
         }
-        return ['path' => $url_link, 'data' => isset($url_data) ? $url_data : ''];
+        $url_data = isset($params) ? $params : '';
+        return ['path' => $url_link, 'data' => $url_data];
     }
 
     private static function _GET_REWRITE($path)
     {
-
         if(isset($path[0])){
             self::$_MODULE = $path[0];
-            unset($path[0]);
         }
         if (isset($path[1])){
             self::$_CTRL = $path[1];
-            unset($path[1]);
         }else{
             self::$_CTRL = conf::get('default_controller','conf');
         }
         if (isset($path[2])){
             self::$_ACTION = $path[2];
-            unset($path[2]);
         }else{
             self::$_ACTION = conf::get('default_action','conf');
         }
     }
 
 
-    public function _GET_MODULE()
+    public static function _GET_MODULE()
     {
         return self::$_MODULE;
     }
 
 
-    public function _GET_CTRL()
+    public static function _GET_CTRL()
     {
         return self::$_CTRL;
     }
 
 
-    public function _GET_ACTION()
+    public static function _GET_ACTION()
     {
         return self::$_ACTION;
+    }
+
+    public static function _GET_WEB_DIR()
+    {
+        return self::$_WEB_DIR;
     }
 
     private static function _SET_GET($data)

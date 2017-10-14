@@ -10,6 +10,7 @@ namespace core\lib;
 
 class ctrl
 {
+    private static $_WEB_DIR;
     private static $_MODULE;
     private static $_CTRL;
     private static $_ACTION;
@@ -17,11 +18,11 @@ class ctrl
 
     public function __construct()
     {
-        $route = new \core\lib\route();
-        self::$_MODULE = $route->_GET_MODULE();
-        self::$_CTRL = $route->_GET_CTRL();
-        self::$_ACTION = $route->_GET_ACTION();
-        common::_RUN(self::$_MODULE);
+        common::_RUN(\core\lib\route::_GET_MODULE());
+        self::$_WEB_DIR = \core\lib\route::_GET_WEB_DIR();
+        self::$_MODULE = \core\lib\route::_GET_MODULE();
+        self::$_CTRL = \core\lib\route::_GET_CTRL();
+        self::$_ACTION = \core\lib\route::_GET_ACTION();
     }
 
     /**
@@ -72,6 +73,71 @@ class ctrl
         } else {
             throw new \Exception('你要访问的文件不存在~！ Html_Path: ' . self::_CACHE_VIEW() . $display_file);
         }
+    }
+
+    /**
+     * 页面跳转
+     * @param string $path
+     * @param array $data
+     */
+    public function load($path='',$data=[])
+    {
+        if (empty($path)){
+            $path = self::$_MODULE.DS.self::$_CTRL.DS.self::$_ACTION;
+        }
+        if(false !== strpos($path,'?')) { // 解析参数
+            $params = explode('?',$path,2);
+            $path = $params[0];
+            parse_str($params[1],$params);
+        }
+        $params = isset($params) ? array_merge($params,$data) : $data;
+        $load = self::_LOAD_ROUTE($path);
+        $vars = array_merge($params,$load[1]);
+        $params_str = self::_PARAMS_TO_STR($vars);
+        $url = str_replace('\\','/',$_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].DS.self::$_WEB_DIR.DS.$load[0].$params_str);
+        if (!headers_sent()) {
+            header("Location: ".$url);
+            exit;
+        }
+    }
+
+    private function _LOAD_ROUTE($path)
+    {
+        $load_arr = explode('/',trim($path,'/'));
+        if (isset($load_arr[2])){
+            $module = $load_arr[0];
+            $ctrl = $load_arr[1];
+            $action = $load_arr[2];
+            unset($load_arr[0],$load_arr[1],$load_arr[2]);
+        }elseif(isset($load_arr[1])){
+            $module = $load_arr[0];
+            $ctrl = $load_arr[1];
+            $action = conf::get('default_action','conf');
+            unset($load_arr[0],$load_arr[1]);
+        }else{
+            $module = conf::get('default_module','conf')
+                ? conf::get('default_module','conf')
+                : conf::get('default_module','conf',true);
+            $ctrl = conf::get('default_controller','conf')
+                ? conf::get('default_controller','conf')
+                : conf::get('default_controller','conf',true);
+            $action = $load_arr[0];
+            unset($load_arr[0]);
+        }
+        empty($load_arr) ? array_multisort($load_arr) : [];
+        return [$module.DS.$ctrl.DS.$action,$load_arr];
+    }
+
+    private function _PARAMS_TO_STR($params)
+    {
+        static $str;
+        foreach ($params as $key => $val){
+            if (is_array($params[$key])){
+                $str .=self::_PARAMS_TO_STR($val);
+            }
+            $str .= '/'.$key.'/'.$val;
+        }
+        return $str;
     }
 
     private function _VIEW_DIR()
