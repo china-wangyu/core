@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: sphpe
+ * User: china-wangyu@aliyun.com
  * Date: 2017/10/12
  * Time: 20:52
  */
@@ -61,7 +61,7 @@ class ctrl
                 $loader = new \Twig_Loader_Filesystem(self::_VIEW_DIR());
                 $twig = new \Twig_Environment($loader, array(
                     'cache' => self::_VIEW_CACHE_DIR(),
-                    'debug' => true
+                    'debug' => DEBUG
                 ));
                 echo $twig->render($display_file, $this->assign ? $this->assign : '');
             } else {
@@ -76,7 +76,9 @@ class ctrl
 
     private function _VIEW_DIR()
     {
-        $template = conf::get('template', 'conf');
+        $template = conf::get('template', 'conf')
+            ? conf::get('template', 'conf')
+            : conf::get('template', 'conf',true);
         empty($template['view_path']) ? $view_dir = ROOT_PATH . DS . APP . DS . self::$_MODULE . APP_VIEW_PATH
             : $view_dir = $template['view_path'];
         return str_replace('\\', '/', $view_dir); # 视图文件目录
@@ -84,9 +86,11 @@ class ctrl
 
     private function _VIEW_CACHE_DIR()
     {
-        $template = conf::get('cache', 'conf');
-        empty($template['path']) ? $view_cache_dir = RUNTIME_PATH . CACHE_PATH
-            : $view_cache_dir = $template['path'];
+        $cache = conf::get('cache', 'conf')
+            ? conf::get('cache', 'conf')
+            : conf::get('cache', 'conf',true);
+        empty($cache['path']) ? $view_cache_dir = RUNTIME_PATH . CACHE_PATH
+            : $view_cache_dir = $cache['path'];
         is_dir($view_cache_dir) ? '' : mkdir($view_cache_dir, '0777', true);
         return str_replace('\\', '/', $view_cache_dir); # HTML缓存目录
     }

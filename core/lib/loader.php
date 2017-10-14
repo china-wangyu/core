@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: zhns_
+ * User: china-wangyu@aliyun.com
  * Date: 2017/9/26
  * Time: 15:36
  */
@@ -30,9 +30,9 @@ class loader
         \core\lib\log::init();
         \core\lib\log::log('module : '.$module.' ctrl : '.$ctrlClass.' action : '.$action);
 
-        $ctrlFile = ROOT_PATH.DS.APP.DS.$module.APP_CTRL_PATH.$ctrlClass.CTRL_EXT.EXT;    # 控制器文件路径
+        $ctrlFile = ROOT_PATH.DS.APP.DS.$module.APP_CTRL_PATH.$ctrlClass.EXT;    # 控制器文件路径
         $ctrlClass = str_replace('/','\\',DS.APP.DS.$module.APP_CTRL_PATH)
-            .$ctrlClass.CTRL_EXT; # 类名
+            .$ctrlClass; # 类名
         if (is_file($ctrlFile)){
             self::_include_file($ctrlFile);
             $ctrl = new $ctrlClass();

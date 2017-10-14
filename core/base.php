@@ -1,15 +1,14 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: zhns_
- * Date: 2017/10/12
- * Time: 10:04
+ * User: china-wangyu@aliyun.com
+ * Date: 2017/9/26
+ * Time: 15:36
  */
 define('CORE_VERSION', '1.0');  # 框架版本号 1.0
 define('CORE_START_TIME', microtime(true)); # 框架运行微妙数
 define('CORE_START_MEM', memory_get_usage());   # 返回分配给 PHP 的内存量
 define('EXT', '.php');  # 脚本文件后缀名
-define('CTRL_EXT', 'Ctrl');  # 脚本文件后缀名
 define('DEFAULT_NAME', 'index');  # 默认微模块 或 文件
 define('DS', DIRECTORY_SEPARATOR); # 目录 '/ '
 defined('ROOT_PATH') or define('ROOT_PATH', dirname($_SERVER['SCRIPT_FILENAME']) );     # 根目录

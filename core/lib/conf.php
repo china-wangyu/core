@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: zhns_
+ * User: china-wangyu@aliyun.com
  * Date: 2017/10/10
  * Time: 15:44
  */
@@ -10,6 +10,8 @@ namespace core\lib;
 
 
 
+
+use function Composer\Autoload\includeFile;
 
 class conf
 {
@@ -95,6 +97,7 @@ class conf
      */
     static private function _include_file($file)
     {
-        return include str_replace('\\','/',$file);
+        $file = str_replace('\\','/',$file);
+        return include $file;
     }
 }

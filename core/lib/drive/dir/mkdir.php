@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: sphpe
+ * User: china-wangyu@aliyun.com
  * Date: 2017/10/12
  * Time: 22:01
  */
@@ -32,7 +32,7 @@ class mkdir
      * 3. 创建CTRL（控制器）目录
      * 4. 创建VIEW（视图）目录
      * 5. 创建MODLE（模型）目录
-     * 6. 创建CORE框架默认控制器（indexCtrl）and 创建ACTION默认方法（index）
+     * 6. 创建CORE框架默认控制器（index）and 创建ACTION默认方法（index）
      */
     public static function _app()
     {
@@ -90,11 +90,11 @@ class mkdir
 
     public static function _create_default_ctrl()
     {
-        $ctrlPath = ROOT_PATH.DS.APP.DS.DEFAULT_NAME.APP_CTRL_PATH.DEFAULT_NAME.CTRL_EXT.EXT;
+        $ctrlPath = ROOT_PATH.DS.APP.DS.DEFAULT_NAME.APP_CTRL_PATH.DEFAULT_NAME.EXT;
         $data = '<?php'
                     .PHP_EOL.'namespace '.trim(str_replace('/','\\',DS.APP.DS.DEFAULT_NAME.APP_CTRL_PATH),'\\').';'
                     .PHP_EOL.'use '.ltrim(str_replace('/','\\',CORE_LIB_PATH),'\\').'ctrl;'
-                    .PHP_EOL.'class '.DEFAULT_NAME.CTRL_EXT.' extends ctrl'
+                    .PHP_EOL.'class '.DEFAULT_NAME.' extends ctrl'
                     .PHP_EOL.'{'
                     .PHP_EOL.'  public function index()'
                     .PHP_EOL.'  {'

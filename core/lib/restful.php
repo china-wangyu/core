@@ -1,9 +1,9 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: sphpe
- * Date: 2017/10/11
- * Time: 22:31
+ * User: china-wangyu@aliyun.com
+ * Date: 2017/9/26
+ * Time: 15:36
  */
 
 namespace core\lib;

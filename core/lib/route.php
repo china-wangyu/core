@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: zhns_
+ * User: china-wangyu@aliyun.com
  * Date: 2017/9/26
  * Time: 15:44
  */
@@ -22,6 +22,7 @@ class route
      */
     public function __construct()
     {
+
         if (!isset(self::$_URL) or self::$_URL != $_SERVER['PHP_SELF']){
             self::$_URL = $_SERVER['REQUEST_URI'];
             self::_RUN();
@@ -42,18 +43,23 @@ class route
         self::_ROUTE();
     }
 
+    /**
+     * clear url
+     */
     private static function _CLEAR_ROUTE()
     {
 
         if (strpos(self::$_URL,'index.php') !== false){
+
             $url_object = explode('index.php',self::$_URL);
             self::$_URL = empty(isset($url)) ? $url_object[1] : '';
         }elseif(self::$_URL != '/' and !empty(self::$_URL)){
             $CLEAR_CORE_DIR = explode('/',trim(self::$_URL,'/'))
                 ? explode('/',trim(self::$_URL,'/')) : '';
+
             if(isset($CLEAR_CORE_DIR[1])){
                 $CLEAR = explode($_SERVER['PATH_INFO'],self::$_URL);
-//                $CLEAR_TWO = explode('/',trim($CLEAR_ONE[0],'/'));
+
                 self::$_URL = isset($CLEAR[1])
                     ?  $CLEAR[1].$_SERVER['PATH_INFO']
                     : $CLEAR[0].$_SERVER['PATH_INFO'];
@@ -88,9 +94,15 @@ class route
      */
     private static function _INIT_ROUTE()
     {
-        self::$_MODULE = conf::get('default_module','conf');
-        self::$_CTRL = conf::get('default_controller','conf');
-        self::$_ACTION = conf::get('default_action','conf');
+        self::$_MODULE = conf::get('default_module','conf')
+            ? conf::get('default_module','conf')
+            : conf::get('default_module','conf',true);
+        self::$_CTRL = conf::get('default_controller','conf')
+            ? conf::get('default_controller','conf')
+            : conf::get('default_controller','conf',true);
+        self::$_ACTION = conf::get('default_action','conf')
+            ? conf::get('default_action','conf')
+            : conf::get('default_action','conf',true);
         self::$_URL = DS.self::$_MODULE.DS.self::$_CTRL.DS.self::$_ACTION;
     }
 
@@ -165,7 +177,6 @@ class route
     private static function _SET_GET($data)
     {
         if (!empty($data) and is_array($data)){
-            ###  获取URL参数
             $count = count($data) + 1;
             $i = 0;
             while ($i < $count){
