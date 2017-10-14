@@ -53,7 +53,7 @@ class loader
         if (is_file($path.ucfirst($fileName).$ext)){
             return $path.ucfirst($fileName).$ext;
         }elseif(is_file($path.lcfirst($fileName).$ext)){
-            return $path.ucfirst($fileName).$ext;
+            return $path.lcfirst($fileName).$ext;
         }
         return $path.$fileName.$ext;
     }
