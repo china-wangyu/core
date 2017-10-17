@@ -1,8 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: china-wangyu@aliyun.com
- * Date: 2017/10/10
+ *  +----------------------------------------------------------------------
+ *  | restful类 restful.php
+ *  | Auth: china-wangyu@aliyun.com
+ *  +----------------------------------------------------------------------
  */
 
 namespace core\lib;
@@ -157,5 +158,6 @@ abstract class restful
     {
         return self::getBodyParams() ? self::getBodyParams() : $this->_data;
     }
+
 
 }

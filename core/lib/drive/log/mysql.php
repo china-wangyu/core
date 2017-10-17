@@ -1,8 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: china-wangyu@aliyun.com
- * Date: 2017/10/10
+ *  +----------------------------------------------------------------------
+ *  | 日志数据库类 file.php
+ *  | Auth: china-wangyu@aliyun.com
+ *  +----------------------------------------------------------------------
  */
 class mysql
 {

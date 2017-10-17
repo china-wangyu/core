@@ -1,10 +1,13 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: china-wangyu@aliyun.com
- * Date: 2017/10/10
+ *  +----------------------------------------------------------------------
+ *  | 日志文件类 file.php
+ *  | Auth: china-wangyu@aliyun.com
+ *  +----------------------------------------------------------------------
  */
 namespace core\lib\drive\log;
+
+use core\lib\drive\error\error;
 
 class file
 {
@@ -37,13 +40,17 @@ class file
         if (empty($filePath)){
             $filePath = $this->path.date('YmdH').'/log'.EXT;
         }elseif (strrpos($filePath,'.') == false){
-            throw new \Exception('生成日志文件路径不正确~！'.$filePath);
+            new error('生成日志文件路径不正确~！'.$filePath);
         }
 
         $path_dir_count = strripos($filePath,'/');
         $path = str_replace('\\','/',substr($filePath,0,$path_dir_count));
         if(!is_dir($path)){
-            mkdir($path,'0755',true);
+            try{
+                mkdir($path,'0755',true);
+            }catch (\Exception $e){
+                new error('生成日志文件失败，目录权限不够~！',403);
+            }
         }
 
         return file_put_contents($filePath,

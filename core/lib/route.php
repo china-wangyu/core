@@ -1,8 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: china-wangyu@aliyun.com
- * Date: 2017/10/10
+ *  +----------------------------------------------------------------------
+ *  | 日志类 log.php
+ *  | Auth: china-wangyu@aliyun.com
+ *  +----------------------------------------------------------------------
  */
 
 namespace core\lib;
@@ -10,11 +11,14 @@ namespace core\lib;
 
 class route
 {
-    private static $_URL;       # 网页URL连接
-    private static $_WEB_DIR;       # 网页URL连接
-    private static $_MODULE;
-    private static $_CTRL;
-    private static $_ACTION;
+    # 路由url资源
+    private static $_URL = [
+        'url'           => '',
+        'website_name'  => '',
+        'module'        => '',
+        'ctrl'          => '',
+        'action'          => ''
+    ];
 
     /**
      *
@@ -22,8 +26,8 @@ class route
      */
     public function __construct()
     {
-        if (!isset(self::$_URL) or self::$_URL != $_SERVER['PHP_SELF']){
-            self::$_URL = $_SERVER['REQUEST_URI'];
+        if (!isset(self::$_URL['url']) or self::$_URL != $_SERVER['PHP_SELF']){
+            self::$_URL['url'] = $_SERVER['REQUEST_URI'];
             self::_RUN();
         }
 
@@ -47,16 +51,16 @@ class route
      */
     private static function _CLEAR_ROUTE()
     {
-        if (strpos(self::$_URL,'index.php') !== false){
-            $CLEAR_CORE_DIR = explode('index.php',self::$_URL);
-            self::$_WEB_DIR = $CLEAR_CORE_DIR[0];
-            self::$_URL = empty(isset($url)) ? $CLEAR_CORE_DIR[1] : '';
-        }elseif(self::$_URL != '/' and !empty(self::$_URL)){
+        if (strpos(self::$_URL['url'],'index.php') !== false){
+            $CLEAR_CORE_DIR = explode('index.php',self::$_URL['url']);
+            self::$_URL['website_name'] = $CLEAR_CORE_DIR[0];
+            self::$_URL['url'] = empty(isset($url)) ? $CLEAR_CORE_DIR[1] : '';
+        }elseif(self::$_URL != '/' and !empty(self::$_URL['url'])){
             $SCRIPT_NAME_EXPLODE = explode('/',trim($_SERVER['SCRIPT_NAME'],'/'));
-            $CLEAR_CORE_DIR = explode('/',trim(self::$_URL,'/'))
-                ? explode('/',trim(self::$_URL,'/')) : '';
+            $CLEAR_CORE_DIR = explode('/',trim(self::$_URL['url'],'/'))
+                ? explode('/',trim(self::$_URL['url'],'/')) : '';
             if (isset($SCRIPT_NAME_EXPLODE[1])){
-                self::$_WEB_DIR = $SCRIPT_NAME_EXPLODE[0];
+                self::$_URL['website_name'] = $SCRIPT_NAME_EXPLODE[0];
                 unset($CLEAR_CORE_DIR[0]);
                 if (!empty($CLEAR_CORE_DIR)){
                     $CLEAR_DATA = array_chunk($CLEAR_CORE_DIR,count($CLEAR_CORE_DIR));
@@ -64,10 +68,10 @@ class route
                 }else{
                     $CLEAR_CORE_DIR = '';
                 }
-
             }
+
             if(isset($CLEAR_CORE_DIR[1])){
-                self::$_URL = join('/',$CLEAR_CORE_DIR);
+                self::$_URL['url'] = join('/',$CLEAR_CORE_DIR);
             }else{
                 self::_INIT_ROUTE();
             }
@@ -82,8 +86,8 @@ class route
      */
     private static function _ROUTE()
     {
-        if( isset(self::$_URL)){
-            if (strpos(self::$_URL,'?') !== false){
+        if( isset(self::$_URL['url'])){
+            if (strpos(self::$_URL['url'],'?') !== false){
                 $url = self::_ANALYSIS_ROUTE_ONE();
             }else{
                 $url = self::_ANALYSIS_ROUTE_TWO();
@@ -98,16 +102,13 @@ class route
      */
     private static function _INIT_ROUTE()
     {
-        self::$_MODULE = conf::get('default_module','conf')
-            ? conf::get('default_module','conf')
-            : conf::get('default_module','conf',true);
-        self::$_CTRL = conf::get('default_controller','conf')
-            ? conf::get('default_controller','conf')
-            : conf::get('default_controller','conf',true);
-        self::$_ACTION = conf::get('default_action','conf')
-            ? conf::get('default_action','conf')
-            : conf::get('default_action','conf',true);
-        self::$_URL = DS.self::$_MODULE.DS.self::$_CTRL.DS.self::$_ACTION;
+        self::$_URL = [
+            'url'           => DS.conf::get('default_module','conf').DS.conf::get('default_controller','conf').DS.conf::get('default_action','conf'),
+            'website_name'  => '',
+            'module'        => conf::get('default_module','conf'),
+            'ctrl'          => conf::get('default_controller','conf'),
+            'action'          => conf::get('default_action','conf')
+        ];
     }
 
     /**
@@ -116,7 +117,7 @@ class route
      */
     private static function _ANALYSIS_ROUTE_ONE()
     {
-        $url = explode('?',trim(self::$_URL,'/'),2);
+        $url = explode('?',trim(self::$_URL['url'],'/'),2);
         parse_str($url[1],$params);
         $url_link = $url_arr = explode('/',trim($url[0],'/'));
         return ['path' => $url_link, 'data' => empty($params) ? $params : ''];
@@ -128,7 +129,7 @@ class route
      */
     private static function _ANALYSIS_ROUTE_TWO()
     {
-        $url = explode('/',trim(str_replace('\\','/',self::$_URL),'/'));
+        $url = explode('/',trim(str_replace('\\','/',self::$_URL['url']),'/'));
         $url_link = [$url[0],$url[1],$url[2]];
         if(isset($url[3])){
             unset($url[0],$url[1],$url[2]);
@@ -142,41 +143,42 @@ class route
     private static function _GET_REWRITE($path)
     {
         if(isset($path[0])){
-            self::$_MODULE = $path[0];
+            self::$_URL['module'] = $path[0];
         }
         if (isset($path[1])){
-            self::$_CTRL = $path[1];
+            self::$_URL['ctrl'] = $path[1];
         }else{
-            self::$_CTRL = conf::get('default_controller','conf');
+            self::$_URL['ctrl'] = conf::get('default_controller','conf');
         }
         if (isset($path[2])){
-            self::$_ACTION = $path[2];
+            self::$_URL['action'] = $path[2];
         }else{
-            self::$_ACTION = conf::get('default_action','conf');
+            self::$_URL['action'] = conf::get('default_action','conf');
         }
     }
 
 
-    public static function _GET_MODULE()
+    public static function module()
     {
-        return self::$_MODULE;
+        return self::$_URL['module'];
     }
 
 
-    public static function _GET_CTRL()
+
+    public static function ctrl()
     {
-        return self::$_CTRL;
+        return self::$_URL['ctrl'];
     }
 
 
-    public static function _GET_ACTION()
+    public static function action()
     {
-        return self::$_ACTION;
+        return self::$_URL['action'];
     }
 
-    public static function _GET_WEB_DIR()
+    public static function website_name()
     {
-        return self::$_WEB_DIR;
+        return self::$_URL['website_name'];
     }
 
     private static function _SET_GET($data)

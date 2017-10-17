@@ -1,8 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: china-wangyu@aliyun.com
- * Date: 2017/10/10
+ *  +----------------------------------------------------------------------
+ *  | 框架开始运行文件 start.php
+ *  | Auth: china-wangyu@aliyun.com
+ *  +----------------------------------------------------------------------
  */
 include  'base.php';
 
