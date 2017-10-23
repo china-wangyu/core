@@ -63,6 +63,32 @@ class ctrl
         }
     }
 
+    /**
+     * 视图渲染
+     * @param string $file
+     * @param array $params
+     */
+    public function render($file= '', $params=[])
+    {
+        if (empty($file)) {
+            $file = route::ctrl() . '/' . route::action();
+        }
+
+        $template = conf::get('template', 'conf');
+        $dir_arr = file::_include_view_file($file,$template);
+
+        if (is_dir(VENDOR_PATH . $template['type'])) {
+            $loader = new \Twig_Loader_Filesystem($dir_arr['dir']);
+            $twig = new \Twig_Environment($loader, array(
+                'cache' => self::_VIEW_CACHE_DIR(),
+                'debug' => DEBUG
+            ));
+            echo $twig->render($dir_arr['filename'], $params);
+        } else {
+            extract($params);
+            self::_include_file($dir_arr['dir'] . $dir_arr['filename']);
+        }
+    }
 
     private function _VIEW_CACHE_DIR()
     {
